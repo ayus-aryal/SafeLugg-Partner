@@ -60,7 +60,7 @@ fun WelcomeScreen(onGoogleSignInClick: () -> Unit){
 
         }
         Button(
-            onClick = {},
+            onClick = { onGoogleSignInClick() },
             modifier = Modifier.fillMaxWidth()
                 .padding(bottom = 32.dp)
                 .height(56.dp),
