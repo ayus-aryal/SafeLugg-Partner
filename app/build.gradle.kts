@@ -87,6 +87,8 @@ dependencies {
     implementation(libs.hilt.compose.navigation)
     kapt(libs.dagger.kapt)
 
+    implementation("androidx.compose.material3:material3:1.3.2")
+
 
 
 
