@@ -82,6 +82,7 @@ fun FillYourDetails1Screen(onNextClicked: () -> Unit) {
                         "Turn your idle space into income.\nNo investment needed.",
                         fontSize = 14.sp,
                         color = Color.Gray,
+                        fontFamily = customFontFamily,
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
@@ -122,7 +123,9 @@ fun FillYourDetails1Screen(onNextClicked: () -> Unit) {
                         Text(
                             "Next Step — Tell Us About Your Space",
                             color = Color.White,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium,
+                            fontFamily = customFontFamily
+
                         )
                         Spacer(Modifier.width(8.dp))
                         Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.White)
@@ -148,16 +151,18 @@ fun FormField(
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
             color = Color.Black,
+            fontFamily = customFontFamily,
             modifier = Modifier.padding(bottom = 4.dp)
         )
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            placeholder = { Text(text = label, color = Color.Gray) },
+            placeholder = { Text(text = label, color = Color.Gray,             fontFamily = customFontFamily
+            ) },
             isError = error,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         if (error) {
             Text(
