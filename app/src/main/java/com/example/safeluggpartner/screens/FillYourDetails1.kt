@@ -1,186 +1,133 @@
 package com.example.safeluggpartner.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.safeluggpartner.R
+
+val customFontFamily = FontFamily(Font(R.font.inter))
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FillYourDetails1Screen(
-    onNextClicked: () -> Unit
-) {
+fun FillYourDetails1Screen(onNextClicked: () -> Unit) {
     val focusManager = LocalFocusManager.current
 
     var businessName by rememberSaveable { mutableStateOf("") }
-    var businessType by rememberSaveable { mutableStateOf("") }
     var ownerName by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
 
-    var expanded by remember { mutableStateOf(false) }
-    val businessTypeOptions = listOf("Hotel", "Shop", "Cafe", "Restaurant", "Other")
-
-    // Error state tracking
     val businessNameError = businessName.isBlank()
-    val businessTypeError = businessType.isBlank()
     val ownerNameError = ownerName.isBlank()
     val phoneError = phoneNumber.length != 10
     val emailError = !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "Fill the basic infos",
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black)
-            )
-        },
-        containerColor = Color.White
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(20.dp)
-                .verticalScroll(rememberScrollState())
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth()
+                .padding(top = 25.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(6.dp),
+            shape = RoundedCornerShape(16.dp)
         ) {
-            Text(
-                "Let’s get to know your business",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
-
-            FieldLabel("Business Name *")
-            FormField(
-                label = "Business Name",
-                value = businessName,
-                onValueChange = { businessName = it },
-                error = businessNameError,
-                errorMessage = "Business name is required"
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            FieldLabel("Business Type *")
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = { expanded = !expanded }
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                OutlinedTextField(
-                    value = businessType,
-                    onValueChange = {},
-                    readOnly = true,
-                    isError = businessTypeError,
-                    placeholder = { Text("Select one", color = Color.Black.copy(alpha = 0.6f)) },
-                    trailingIcon = {
-                        Icon(
-                            Icons.Filled.ArrowDropDown,
-                            contentDescription = null,
-                            tint = Color.Black
-                        )
-                    },
-                    textStyle = TextStyle(color = Color.Black),
-                    modifier = Modifier
-                        .menuAnchor()
-                        .fillMaxWidth(),
-                    singleLine = true
+                // Logo & Header
+                Column(horizontalAlignment = Alignment.Start) {
+                    Icon(
+                        painter = painterResource(R.drawable.logo_safeluggpartner),
+                        contentDescription = "SafeLugg Logo",
+                        tint = Color.Black,
+                        modifier = Modifier.size(120.dp)
+                    )
+                    Text(
+                        "Become a SafeLugg Partner",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color.Black,
+                        fontFamily = customFontFamily
+
+                    )
+                    Text(
+                        "Turn your idle space into income.\nNo investment needed.",
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+
+                // Form Fields
+                FormField("Business Name *", businessName, { businessName = it }, businessNameError, "Business name is required")
+                FormField("Owner's Full Name *", ownerName, { ownerName = it }, ownerNameError, "Owner name is required")
+                FormField(
+                    "Mobile Number *",
+                    phoneNumber,
+                    { phoneNumber = it.filter { ch -> ch.isDigit() }.take(10) },
+                    phoneError,
+                    "Enter a valid 10-digit number",
+                    KeyboardType.Phone
                 )
-                ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                FormField(
+                    "Email Address *",
+                    email,
+                    { email = it },
+                    emailError,
+                    "Enter a valid email",
+                    KeyboardType.Email
+                )
+
+                // Button
+                Button(
+                    onClick = {
+                        focusManager.clearFocus()
+                        onNextClicked()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                    enabled = !businessNameError && !ownerNameError && !phoneError && !emailError
                 ) {
-                    businessTypeOptions.forEach {
-                        DropdownMenuItem(
-                            text = { Text(it, color = Color.Black) },
-                            onClick = {
-                                businessType = it
-                                expanded = false
-                            }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            "Next Step — Tell Us About Your Space",
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium
                         )
+                        Spacer(Modifier.width(8.dp))
+                        Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.White)
                     }
                 }
-            }
-
-            AnimatedVisibility(visible = businessTypeError) {
-                Text(
-                    "Please select a business type",
-                    color = Color.Red,
-                    fontSize = 12.sp
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            FieldLabel("Owner Full Name *")
-            FormField(
-                label = "Owner Full Name",
-                value = ownerName,
-                onValueChange = { ownerName = it },
-                error = ownerNameError,
-                errorMessage = "Owner name is required"
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            FieldLabel("Phone Number *")
-            FormField(
-                label = "Phone Number",
-                value = phoneNumber,
-                onValueChange = { phoneNumber = it.filter { it.isDigit() }.take(10) },
-                error = phoneError,
-                errorMessage = "Enter a valid 10-digit phone number",
-                keyboardType = KeyboardType.Phone
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            FieldLabel("Email Address *")
-            FormField(
-                label = "Email Address",
-                value = email,
-                onValueChange = { email = it },
-                error = emailError,
-                errorMessage = "Enter a valid email",
-                keyboardType = KeyboardType.Email
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Button(
-                onClick = {
-                    focusManager.clearFocus()
-                    onNextClicked()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                enabled = !businessNameError && !businessTypeError && !ownerNameError && !phoneError && !emailError,
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
-            ) {
-                Text("Next", color = Color.White, fontWeight = FontWeight.SemiBold)
             }
         }
     }
@@ -195,19 +142,24 @@ fun FormField(
     errorMessage: String,
     keyboardType: KeyboardType = KeyboardType.Text
 ) {
-    Column {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
+            color = Color.Black,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            label = { Text(label, color = Color.Black) },
-            placeholder = { Text(label, color = Color.Black.copy(alpha = 0.6f)) },
+            placeholder = { Text(text = label, color = Color.Gray) },
             isError = error,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            textStyle = TextStyle(color = Color.Black),
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
         )
-        AnimatedVisibility(visible = error) {
+        if (error) {
             Text(
                 text = errorMessage,
                 color = Color.Red,
@@ -216,17 +168,6 @@ fun FormField(
             )
         }
     }
-}
-
-@Composable
-fun FieldLabel(text: String) {
-    Text(
-        text = text,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        color = Color.Black,
-        modifier = Modifier.padding(bottom = 4.dp)
-    )
 }
 
 @Preview(showBackground = true)
