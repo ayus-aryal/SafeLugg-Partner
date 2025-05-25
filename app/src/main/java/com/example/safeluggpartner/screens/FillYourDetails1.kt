@@ -53,7 +53,7 @@ fun FillYourDetails1Screen(navController: NavController) {
     ) {
         Card(
             modifier = Modifier.fillMaxWidth()
-                .padding(top = 25.dp),
+                .padding(top = 1.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(6.dp),
             shape = RoundedCornerShape(16.dp)
@@ -70,7 +70,7 @@ fun FillYourDetails1Screen(navController: NavController) {
                         painter = painterResource(R.drawable.logo_safeluggpartner1),
                         contentDescription = "SafeLugg Logo",
                         tint = Color.Black,
-                        modifier = Modifier.size(120.dp)
+                        modifier = Modifier.size(100.dp)
                     )
                     Text(
                         "Become a SafeLugg Partner",
@@ -132,7 +132,7 @@ fun FillYourDetails1Screen(navController: NavController) {
 
                         )
                         Spacer(Modifier.width(8.dp))
-                        Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.White)
+                        Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(400.dp))
                     }
                 }
             }
