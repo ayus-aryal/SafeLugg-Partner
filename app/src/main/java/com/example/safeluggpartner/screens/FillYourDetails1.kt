@@ -22,6 +22,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.safeluggpartner.R
 
 val customFontFamily = FontFamily(Font(R.font.inter))
@@ -30,7 +32,7 @@ val customFontFamily = FontFamily(Font(R.font.inter))
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FillYourDetails1Screen(onNextClicked: () -> Unit) {
+fun FillYourDetails1Screen(navController: NavController) {
     val focusManager = LocalFocusManager.current
 
     var businessName by rememberSaveable { mutableStateOf("") }
@@ -65,7 +67,7 @@ fun FillYourDetails1Screen(onNextClicked: () -> Unit) {
                 // Logo & Header
                 Column(horizontalAlignment = Alignment.Start) {
                     Icon(
-                        painter = painterResource(R.drawable.logo_safeluggpartner),
+                        painter = painterResource(R.drawable.logo_safeluggpartner1),
                         contentDescription = "SafeLugg Logo",
                         tint = Color.Black,
                         modifier = Modifier.size(120.dp)
@@ -111,7 +113,9 @@ fun FillYourDetails1Screen(onNextClicked: () -> Unit) {
                 Button(
                     onClick = {
                         focusManager.clearFocus()
-                        onNextClicked()
+                        if (!businessNameError && !ownerNameError && !phoneError && !emailError) {
+                            navController.navigate("fill_your_details2_screen")
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -178,5 +182,5 @@ fun FormField(
 @Preview(showBackground = true)
 @Composable
 fun FillYourDetails1ScreenPreview() {
-    FillYourDetails1Screen(onNextClicked = {})
+    FillYourDetails1Screen(navController = rememberNavController())
 }
