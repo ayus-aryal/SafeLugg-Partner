@@ -46,7 +46,6 @@ class MainActivity : ComponentActivity() {
                 composable(route = "fill_your_details2_screen"){
                     FillYourDetails2Screen(
                         navController = navController,
-                        onNextClicked = TODO()
                     )
                 }
                 

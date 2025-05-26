@@ -29,20 +29,27 @@ import java.util.*
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun FillYourDetails2Screen(
-    navController: NavController,
-    onNextClicked: () -> Unit
-) {
+fun FillYourDetails2Screen(navController: NavController) {
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+    val geocoder = Geocoder(context, Locale.getDefault())
 
-    var address by rememberSaveable { mutableStateOf("") }
+    // Form States
+    var country by rememberSaveable { mutableStateOf("") }
+    var state by rememberSaveable { mutableStateOf("") }
+    var city by rememberSaveable { mutableStateOf("") }
+    var postalCode by rememberSaveable { mutableStateOf("") }
+    var streetAddress by rememberSaveable { mutableStateOf("") }
+    var landmark by rememberSaveable { mutableStateOf("") }
     var locationText by rememberSaveable { mutableStateOf("No location selected") }
 
-    val addressError = address.isBlank()
-
-    val geocoder = Geocoder(context, Locale.getDefault())
+    // Validation
+    val countryError = country.isBlank()
+    val stateError = state.isBlank()
+    val cityError = city.isBlank()
+    val postalCodeError = postalCode.length < 4
+    val streetAddressError = streetAddress.isBlank()
 
     Column(
         modifier = Modifier
@@ -51,24 +58,12 @@ fun FillYourDetails2Screen(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top
     ) {
-        Text("Business Address *", fontWeight = FontWeight.Medium, fontSize = 16.sp)
-        Spacer(Modifier.height(4.dp))
-        TextField(
-            value = address,
-            onValueChange = { address = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(120.dp),
-            placeholder = { Text("Enter full address") },
-            isError = addressError,
-            maxLines = 4,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-            shape = RoundedCornerShape(8.dp)
-        )
-        if (addressError) {
-            Text("Address is required", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
-        }
+        AddressField("Country *", country, { country = it }, countryError)
+        AddressField("State / Province *", state, { state = it }, stateError)
+        AddressField("City *", city, { city = it }, cityError)
+        AddressField("Postal Code *", postalCode, { postalCode = it.filter { it.isDigit() } }, postalCodeError, KeyboardType.Number)
+        MultilineAddressField("Street Address *", streetAddress, { streetAddress = it }, streetAddressError)
+        AddressField("Landmark (Optional)", landmark, { landmark = it }, false)
 
         Spacer(Modifier.height(24.dp))
 
@@ -82,14 +77,19 @@ fun FillYourDetails2Screen(
                         .addOnSuccessListener { location: Location? ->
                             location?.let {
                                 val addresses = geocoder.getFromLocation(it.latitude, it.longitude, 1)
-                                if (addresses?.isNotEmpty() == true) {
-                                    val fullAddress = addresses[0].getAddressLine(0)
-                                    locationText = "GPS: $fullAddress"
+                                if (!addresses.isNullOrEmpty()) {
+                                    val addr = addresses[0]
+                                    country = addr.countryName ?: country
+                                    state = addr.adminArea ?: state
+                                    city = addr.locality ?: city
+                                    postalCode = addr.postalCode ?: postalCode
+                                    streetAddress = addr.thoroughfare ?: streetAddress
+                                    locationText = "GPS: ${addr.getAddressLine(0)}"
                                 } else {
-                                    locationText = "Location found but address not available."
+                                    locationText = "Location found but address unavailable"
                                 }
                             } ?: run {
-                                locationText = "Unable to fetch location."
+                                locationText = "Unable to fetch location"
                             }
                         }
                         .addOnFailureListener {
@@ -101,7 +101,7 @@ fun FillYourDetails2Screen(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Select Location via GPS")
+            Text("Use My Current Location (GPS)")
         }
 
         Spacer(Modifier.height(8.dp))
@@ -111,7 +111,9 @@ fun FillYourDetails2Screen(
 
         Button(
             onClick = {
-                if (!addressError) onNextClicked()
+                if (!countryError && !stateError && !cityError && !postalCodeError && !streetAddressError) {
+                    navController.navigate("home_screen") // Replace with next screen
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -123,8 +125,61 @@ fun FillYourDetails2Screen(
     }
 }
 
+@Composable
+fun AddressField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    error: Boolean,
+    keyboardType: KeyboardType = KeyboardType.Text
+) {
+    Column(Modifier.fillMaxWidth().padding(bottom = 12.dp)) {
+        Text(label, fontWeight = FontWeight.Medium, fontSize = 14.sp)
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            isError = error,
+            singleLine = true,
+            shape = RoundedCornerShape(8.dp)
+        )
+        if (error) {
+            Text("$label is required", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+        }
+    }
+}
+
+@Composable
+fun MultilineAddressField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    error: Boolean
+) {
+    Column(Modifier.fillMaxWidth().padding(bottom = 12.dp)) {
+        Text(label, fontWeight = FontWeight.Medium, fontSize = 14.sp)
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
+            placeholder = { Text("Enter full address") },
+            isError = error,
+            maxLines = 4,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            textStyle = TextStyle.Default.copy(fontSize = 14.sp),
+            shape = RoundedCornerShape(8.dp)
+        )
+        if (error) {
+            Text("$label is required", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun FillYourDetails2ScreenPreview() {
-    FillYourDetails2Screen(navController = rememberNavController(), onNextClicked = {})
+    FillYourDetails2Screen(navController = rememberNavController())
 }

@@ -1,0 +1,421 @@
+{
+  "countries": [
+    {
+      "name": "Nepal",
+      "states": [
+        {
+          "name": "Province No. 1",
+          "cities": [
+            "Biratnagar",
+            "Dharan",
+            "Ilam",
+            "Dhankuta"
+          ]
+        },
+        {
+          "name": "Madhesh Province",
+          "cities": [
+            "Janakpur",
+            "Birgunj",
+            "Lahan",
+            "Jaleshwar"
+          ]
+        },
+        {
+          "name": "Bagmati Province",
+          "cities": [
+            "Kathmandu",
+            "Lalitpur",
+            "Bhaktapur",
+            "Hetauda"
+          ]
+        },
+        {
+          "name": "Gandaki Province",
+          "cities": [
+            "Pokhara",
+            "Baglung",
+            "Gorkha",
+            "Beni"
+          ]
+        },
+        {
+          "name": "Lumbini Province",
+          "cities": [
+            "Butwal",
+            "Bhairahawa",
+            "Dang",
+            "Kapilvastu"
+          ]
+        },
+        {
+          "name": "Karnali Province",
+          "cities": [
+            "Birendranagar",
+            "Jumla",
+            "Dailekh",
+            "Dolpa"
+          ]
+        },
+        {
+          "name": "Sudurpashchim Province",
+          "cities": [
+            "Dhangadhi",
+            "Mahendranagar",
+            "Dadeldhura",
+            "Baitadi"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "India",
+      "states": [
+        {
+          "name": "Andhra Pradesh",
+          "cities": [
+            "Visakhapatnam",
+            "Vijayawada",
+            "Guntur",
+            "Nellore",
+            "Kurnool"
+          ]
+        },
+        {
+          "name": "Arunachal Pradesh",
+          "cities": [
+            "Itanagar",
+            "Naharlagun",
+            "Pasighat",
+            "Tawang",
+            "Ziro"
+          ]
+        },
+        {
+          "name": "Assam",
+          "cities": [
+            "Guwahati",
+            "Silchar",
+            "Dibrugarh",
+            "Jorhat",
+            "Nagaon"
+          ]
+        },
+        {
+          "name": "Bihar",
+          "cities": [
+            "Patna",
+            "Gaya",
+            "Bhagalpur",
+            "Muzaffarpur",
+            "Darbhanga"
+          ]
+        },
+        {
+          "name": "Chhattisgarh",
+          "cities": [
+            "Raipur",
+            "Bhilai",
+            "Bilaspur",
+            "Korba",
+            "Durg"
+          ]
+        },
+        {
+          "name": "Goa",
+          "cities": [
+            "Panaji",
+            "Margao",
+            "Vasco da Gama",
+            "Mapusa",
+            "Ponda"
+          ]
+        },
+        {
+          "name": "Gujarat",
+          "cities": [
+            "Ahmedabad",
+            "Surat",
+            "Vadodara",
+            "Rajkot",
+            "Bhavnagar"
+          ]
+        },
+        {
+          "name": "Haryana",
+          "cities": [
+            "Faridabad",
+            "Gurgaon",
+            "Panipat",
+            "Ambala",
+            "Hisar"
+          ]
+        },
+        {
+          "name": "Himachal Pradesh",
+          "cities": [
+            "Shimla",
+            "Dharamshala",
+            "Solan",
+            "Mandi",
+            "Bilaspur"
+          ]
+        },
+        {
+          "name": "Jharkhand",
+          "cities": [
+            "Ranchi",
+            "Jamshedpur",
+            "Dhanbad",
+            "Bokaro",
+            "Deoghar"
+          ]
+        },
+        {
+          "name": "Karnataka",
+          "cities": [
+            "Bengaluru",
+            "Mysuru",
+            "Hubballi",
+            "Mangaluru",
+            "Belagavi"
+          ]
+        },
+        {
+          "name": "Kerala",
+          "cities": [
+            "Thiruvananthapuram",
+            "Kochi",
+            "Kozhikode",
+            "Thrissur",
+            "Kollam"
+          ]
+        },
+        {
+          "name": "Madhya Pradesh",
+          "cities": [
+            "Bhopal",
+            "Indore",
+            "Gwalior",
+            "Jabalpur",
+            "Ujjain"
+          ]
+        },
+        {
+          "name": "Maharashtra",
+          "cities": [
+            "Mumbai",
+            "Pune",
+            "Nagpur",
+            "Nashik",
+            "Aurangabad"
+          ]
+        },
+        {
+          "name": "Manipur",
+          "cities": [
+            "Imphal",
+            "Thoubal",
+            "Bishnupur",
+            "Churachandpur",
+            "Kakching"
+          ]
+        },
+        {
+          "name": "Meghalaya",
+          "cities": [
+            "Shillong",
+            "Tura",
+            "Nongpoh",
+            "Jowai",
+            "Baghmara"
+          ]
+        },
+        {
+          "name": "Mizoram",
+          "cities": [
+            "Aizawl",
+            "Lunglei",
+            "Champhai",
+            "Serchhip",
+            "Kolasib"
+          ]
+        },
+        {
+          "name": "Nagaland",
+          "cities": [
+            "Kohima",
+            "Dimapur",
+            "Mokokchung",
+            "Tuensang",
+            "Wokha"
+          ]
+        },
+        {
+          "name": "Odisha",
+          "cities": [
+            "Bhubaneswar",
+            "Cuttack",
+            "Rourkela",
+            "Berhampur",
+            "Sambalpur"
+          ]
+        },
+        {
+          "name": "Punjab",
+          "cities": [
+            "Ludhiana",
+            "Amritsar",
+            "Jalandhar",
+            "Patiala",
+            "Bathinda"
+          ]
+        },
+        {
+          "name": "Rajasthan",
+          "cities": [
+            "Jaipur",
+            "Jodhpur",
+            "Udaipur",
+            "Kota",
+            "Bikaner"
+          ]
+        },
+        {
+          "name": "Sikkim",
+          "cities": [
+            "Gangtok",
+            "Namchi",
+            "Gyalshing",
+            "Mangan",
+            "Rangpo"
+          ]
+        },
+        {
+          "name": "Tamil Nadu",
+          "cities": [
+            "Chennai",
+            "Coimbatore",
+            "Madurai",
+            "Tiruchirappalli",
+            "Salem"
+          ]
+        },
+        {
+          "name": "Telangana",
+          "cities": [
+            "Hyderabad",
+            "Warangal",
+            "Nizamabad",
+            "Karimnagar",
+            "Khammam"
+          ]
+        },
+        {
+          "name": "Tripura",
+          "cities": [
+            "Agartala",
+            "Udaipur",
+            "Dharmanagar",
+            "Kailasahar",
+            "Belonia"
+          ]
+        },
+        {
+          "name": "Uttar Pradesh",
+          "cities": [
+            "Lucknow",
+            "Kanpur",
+            "Ghaziabad",
+            "Agra",
+            "Varanasi"
+          ]
+        },
+        {
+          "name": "Uttarakhand",
+          "cities": [
+            "Dehradun",
+            "Haridwar",
+            "Roorkee",
+            "Haldwani",
+            "Rudrapur"
+          ]
+        },
+        {
+          "name": "West Bengal",
+          "cities": [
+            "Kolkata",
+            "Asansol",
+            "Siliguri",
+            "Durgapur",
+            "Howrah"
+          ]
+        },
+        {
+          "name": "Andaman and Nicobar Islands",
+          "cities": [
+            "Port Blair"
+          ]
+        },
+        {
+          "name": "Chandigarh",
+          "cities": [
+            "Chandigarh"
+          ]
+        },
+        {
+          "name": "Dadra and Nagar Haveli and Daman and Diu",
+          "cities": [
+            "Daman",
+            "Diu",
+            "Silvassa"
+          ]
+        },
+        {
+          "name": "Delhi",
+          "cities": [
+            "New Delhi",
+            "Dwarka",
+            "Rohini",
+            "Saket",
+            "Karol Bagh"
+          ]
+        },
+        {
+          "name": "Jammu and Kashmir",
+          "cities": [
+            "Srinagar",
+            "Jammu",
+            "Anantnag",
+            "Baramulla",
+            "Udhampur"
+          ]
+        },
+        {
+          "name": "Ladakh",
+          "cities": [
+            "Leh",
+            "Kargil"
+          ]
+        },
+        {
+          "name": "Lakshadweep",
+          "cities": [
+            "Kavaratti",
+            "Agatti",
+            "Minicoy"
+          ]
+        },
+        {
+          "name": "Puducherry",
+          "cities": [
+            "Puducherry",
+            "Karaikal",
+            "Yanam",
+            "Mahe"
+          ]
+        }
+      ]
+    }
+  ]
+}
