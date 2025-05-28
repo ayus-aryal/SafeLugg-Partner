@@ -150,7 +150,7 @@ fun FormField(
     error: Boolean,
     errorMessage: String,
     keyboardType: KeyboardType = KeyboardType.Text ,
-    placeholderText: String = label // Optional: Defaults to label
+    placeholderText: String = label
 
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {

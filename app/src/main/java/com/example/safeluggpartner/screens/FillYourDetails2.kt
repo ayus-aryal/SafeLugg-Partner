@@ -93,7 +93,7 @@ fun FillYourDetails2Screen(navController: NavController) {
         ) {
             Column(
                 modifier = Modifier.padding(24.dp).fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(7.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.logo_safeluggpartner1),
@@ -135,7 +135,7 @@ fun FillYourDetails2Screen(navController: NavController) {
                         locationPermissionState.launchPermissionRequest()
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
                 ) {
                     Text("Use My Current Location (GPS)")
                 }
@@ -172,6 +172,9 @@ fun FillYourDetails2Screen(navController: NavController) {
 
                 Text(locationText, color = Color.Gray, fontSize = 12.sp)
 
+                val isFormValid = !countryError && !stateError && !cityError && !postalCodeError && !streetAddressError
+
+
                 Button(
                     onClick = {
                         if (!countryError && !stateError && !cityError && !postalCodeError && !streetAddressError) {
@@ -179,9 +182,10 @@ fun FillYourDetails2Screen(navController: NavController) {
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(50.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+                    enabled = isFormValid,
+                    colors = ButtonDefaults.buttonColors(containerColor = if(isFormValid) Color.Black else Color.Gray)
                 ) {
-                    Text("Next Step — Complete Your Profile", color = Color.White)
+                    Text("Next Step — Storage Details", color = Color.White)
                 }
             }
         }
