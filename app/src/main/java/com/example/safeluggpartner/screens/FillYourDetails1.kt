@@ -53,7 +53,7 @@ fun FillYourDetails1Screen(navController: NavController) {
     ) {
         Card(
             modifier = Modifier.fillMaxWidth()
-                .padding(top = 1.dp),
+                .padding(top =25.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(6.dp),
             shape = RoundedCornerShape(16.dp)
@@ -70,7 +70,7 @@ fun FillYourDetails1Screen(navController: NavController) {
                         painter = painterResource(R.drawable.logo_safeluggpartner1),
                         contentDescription = "SafeLugg Logo",
                         tint = Color.Black,
-                        modifier = Modifier.size(100.dp)
+                        modifier = Modifier.size(70.dp)
                     )
                     Text(
                         "Become a SafeLugg Partner",
@@ -90,15 +90,16 @@ fun FillYourDetails1Screen(navController: NavController) {
                 }
 
                 // Form Fields
-                FormField("Business Name *", businessName, { businessName = it }, businessNameError, "Business name is required")
-                FormField("Owner's Full Name *", ownerName, { ownerName = it }, ownerNameError, "Owner name is required")
+                FormField("Business Name *", businessName, { businessName = it }, businessNameError, "Business name is required", placeholderText = "Enter your business name")
+                FormField("Owner's Full Name *", ownerName, { ownerName = it }, ownerNameError, "Owner name is required", placeholderText = "Enter your full name")
                 FormField(
                     "Mobile Number *",
                     phoneNumber,
                     { phoneNumber = it.filter { ch -> ch.isDigit() }.take(10) },
                     phoneError,
                     "Enter a valid 10-digit number",
-                    KeyboardType.Phone
+                    KeyboardType.Phone,
+                    placeholderText = "Enter your phone number"
                 )
                 FormField(
                     "Email Address *",
@@ -106,7 +107,8 @@ fun FillYourDetails1Screen(navController: NavController) {
                     { email = it },
                     emailError,
                     "Enter a valid email",
-                    KeyboardType.Email
+                    KeyboardType.Email,
+                    placeholderText = "Enter your email"
                 )
 
                 // Button
@@ -147,7 +149,9 @@ fun FormField(
     onValueChange: (String) -> Unit,
     error: Boolean,
     errorMessage: String,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text ,
+    placeholderText: String = label // Optional: Defaults to label
+
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -161,7 +165,7 @@ fun FormField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            placeholder = { Text(text = label, color = Color.Gray,             fontFamily = customFontFamily
+            placeholder = { Text(text = placeholderText, color = Color.Gray, fontFamily = customFontFamily
             ) },
             isError = error,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),

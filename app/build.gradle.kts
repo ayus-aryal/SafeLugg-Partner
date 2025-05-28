@@ -6,6 +6,9 @@ plugins {
 
     alias(libs.plugins.dagger)
     kotlin("kapt")
+
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21"
+
 }
 
 android {
@@ -71,10 +74,8 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.googleid)
 
-    implementation(libs.firebase.auth)
 
 
-    implementation(libs.firebase.auth.ktx)
 
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
@@ -87,11 +88,9 @@ dependencies {
     implementation(libs.hilt.compose.navigation)
     kapt(libs.dagger.kapt)
 
-    implementation("androidx.compose.material3:material3:1.3.2")
 
 
     implementation("com.google.android.gms:play-services-location:21.0.1")
-    implementation("com.google.accompanist:accompanist-permissions:0.31.5-beta")
 
 
 
@@ -99,6 +98,11 @@ dependencies {
     implementation("com.google.accompanist:accompanist-permissions:0.31.5-beta")
     implementation("com.google.maps.android:maps-compose:2.11.4")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
+
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
 
 
 }

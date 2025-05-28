@@ -2,18 +2,21 @@ package com.example.safeluggpartner.screens
 
 import android.Manifest
 import android.location.Geocoder
-import android.location.Location
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,10 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.safeluggpartner.R
+import com.example.safeluggpartner.data.CountriesResponse
+import com.example.safeluggpartner.data.parseCountryStateCityJson
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.tasks.await
 import java.util.*
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -33,7 +42,16 @@ fun FillYourDetails2Screen(navController: NavController) {
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
-    val geocoder = Geocoder(context, Locale.getDefault())
+    val geocoder = remember { Geocoder(context, Locale.getDefault()) }
+
+    var countriesResponse by remember { mutableStateOf<CountriesResponse?>(null) }
+
+    LaunchedEffect(Unit) {
+        val jsonString = withContext(Dispatchers.IO) {
+            context.assets.open("countries_data.json").bufferedReader().use { it.readText() }
+        }
+        countriesResponse = parseCountryStateCityJson(jsonString)
+    }
 
     // Form States
     var country by rememberSaveable { mutableStateOf("") }
@@ -44,7 +62,17 @@ fun FillYourDetails2Screen(navController: NavController) {
     var landmark by rememberSaveable { mutableStateOf("") }
     var locationText by rememberSaveable { mutableStateOf("No location selected") }
 
-    // Validation
+    val countryList = countriesResponse?.countries ?: emptyList()
+    val countryNames = countryList.map { it.name }
+
+    val selectedCountryObj = countryList.find { it.name.equals(country, true) }
+    val stateList = selectedCountryObj?.states ?: emptyList()
+    val stateNames = stateList.map { it.name }
+
+    val selectedStateObj = stateList.find { it.name.equals(state, true) }
+    val cityNames = selectedStateObj?.cities ?: emptyList()
+
+    // Validation flags
     val countryError = country.isBlank()
     val stateError = state.isBlank()
     val cityError = city.isBlank()
@@ -54,29 +82,74 @@ fun FillYourDetails2Screen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Top
+            .padding(horizontal = 16.dp, vertical = 16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
-        AddressField("Country *", country, { country = it }, countryError)
-        AddressField("State / Province *", state, { state = it }, stateError)
-        AddressField("City *", city, { city = it }, cityError)
-        AddressField("Postal Code *", postalCode, { postalCode = it.filter { it.isDigit() } }, postalCodeError, KeyboardType.Number)
-        MultilineAddressField("Street Address *", streetAddress, { streetAddress = it }, streetAddressError)
-        AddressField("Landmark (Optional)", landmark, { landmark = it }, false)
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(top = 25.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(6.dp),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp).fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.logo_safeluggpartner1),
+                    contentDescription = "SafeLugg Logo",
+                    tint = Color.Black,
+                    modifier = Modifier.size(70.dp)
+                )
+                Text("Where is Your Luggage Space?", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("Tell us where customers will drop their bags.", fontSize = 14.sp, color = Color.Gray)
 
-        Spacer(Modifier.height(24.dp))
+                AutoCompleteDropdown("Country *", country, {
+                    country = it; state = ""; city = ""
+                }, countryError, countryNames)
 
-        Text("Pick GPS Location", fontWeight = FontWeight.Medium, fontSize = 16.sp)
-        Spacer(Modifier.height(8.dp))
-        Button(
-            onClick = {
-                locationPermissionState.launchPermissionRequest()
-                if (locationPermissionState.status.isGranted) {
-                    fusedLocationClient.lastLocation
-                        .addOnSuccessListener { location: Location? ->
+                AutoCompleteDropdown("State / Province *", state, {
+                    state = it; city = ""
+                }, stateError, stateNames)
+
+                AutoCompleteDropdown("City *", city, {
+                    city = it
+                }, cityError, cityNames)
+
+                AddressField("Postal Code *", postalCode, {
+                    postalCode = it.filter { ch -> ch.isDigit() }
+                }, postalCodeError, KeyboardType.Number)
+
+                MultilineAddressField("Street Address *", streetAddress, {
+                    streetAddress = it
+                }, streetAddressError)
+
+                AddressField("Landmark (Optional)", landmark, {
+                    landmark = it
+                }, false)
+
+                Text("Pick GPS Location", fontWeight = FontWeight.Medium, fontSize = 16.sp)
+
+                Button(
+                    onClick = {
+                        locationPermissionState.launchPermissionRequest()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
+                ) {
+                    Text("Use My Current Location (GPS)")
+                }
+
+                LaunchedEffect(locationPermissionState.status.isGranted) {
+                    if (locationPermissionState.status.isGranted) {
+                        try {
+                            val location = withContext(Dispatchers.IO) {
+                                fusedLocationClient.lastLocation.await()
+                            }
                             location?.let {
-                                val addresses = geocoder.getFromLocation(it.latitude, it.longitude, 1)
+                                val addresses = withContext(Dispatchers.IO) {
+                                    geocoder.getFromLocation(it.latitude, it.longitude, 1)
+                                }
                                 if (!addresses.isNullOrEmpty()) {
                                     val addr = addresses[0]
                                     country = addr.countryName ?: country
@@ -91,36 +164,68 @@ fun FillYourDetails2Screen(navController: NavController) {
                             } ?: run {
                                 locationText = "Unable to fetch location"
                             }
+                        } catch (e: Exception) {
+                            locationText = "Error fetching location: ${e.localizedMessage}"
                         }
-                        .addOnFailureListener {
-                            locationText = "Error fetching location: ${it.localizedMessage}"
-                        }
-                } else {
-                    locationText = "Location permission not granted"
+                    }
                 }
+
+                Text(locationText, color = Color.Gray, fontSize = 12.sp)
+
+                Button(
+                    onClick = {
+                        if (!countryError && !stateError && !cityError && !postalCodeError && !streetAddressError) {
+                            navController.navigate("home_screen")
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+                ) {
+                    Text("Next Step — Complete Your Profile", color = Color.White)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AutoCompleteDropdown(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    isError: Boolean,
+    suggestions: List<String>
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Column {
+        OutlinedTextField(
+            value = value,
+            onValueChange = {
+                onValueChange(it)
+                expanded = true
             },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text(label) },
+            isError = isError,
+            trailingIcon = { Icon(Icons.Default.ArrowDropDown, contentDescription = null) },
+            singleLine = true
+        )
+        DropdownMenu(
+            expanded = expanded && suggestions.isNotEmpty(),
+            onDismissRequest = { expanded = false },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Use My Current Location (GPS)")
-        }
-
-        Spacer(Modifier.height(8.dp))
-        Text(locationText, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
-
-        Spacer(Modifier.height(32.dp))
-
-        Button(
-            onClick = {
-                if (!countryError && !stateError && !cityError && !postalCodeError && !streetAddressError) {
-                    navController.navigate("home_screen") // Replace with next screen
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            Text("Next Step", color = MaterialTheme.colorScheme.onPrimary)
+            suggestions.filter {
+                it.contains(value, ignoreCase = true)
+            }.forEach { suggestion ->
+                DropdownMenuItem(
+                    text = { Text(suggestion) },
+                    onClick = {
+                        onValueChange(suggestion)
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }
@@ -130,24 +235,18 @@ fun AddressField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
-    error: Boolean,
+    isError: Boolean,
     keyboardType: KeyboardType = KeyboardType.Text
 ) {
-    Column(Modifier.fillMaxWidth().padding(bottom = 12.dp)) {
-        Text(label, fontWeight = FontWeight.Medium, fontSize = 14.sp)
-        TextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            isError = error,
-            singleLine = true,
-            shape = RoundedCornerShape(8.dp)
-        )
-        if (error) {
-            Text("$label is required", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
-        }
-    }
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        isError = isError,
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
+    )
 }
 
 @Composable
@@ -155,27 +254,17 @@ fun MultilineAddressField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
-    error: Boolean
+    isError: Boolean
 ) {
-    Column(Modifier.fillMaxWidth().padding(bottom = 12.dp)) {
-        Text(label, fontWeight = FontWeight.Medium, fontSize = 14.sp)
-        TextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp),
-            placeholder = { Text("Enter full address") },
-            isError = error,
-            maxLines = 4,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            textStyle = TextStyle.Default.copy(fontSize = 14.sp),
-            shape = RoundedCornerShape(8.dp)
-        )
-        if (error) {
-            Text("$label is required", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
-        }
-    }
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        isError = isError,
+        modifier = Modifier.fillMaxWidth(),
+        maxLines = 3,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+    )
 }
 
 @Preview(showBackground = true)
