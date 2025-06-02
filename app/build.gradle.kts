@@ -105,4 +105,11 @@ dependencies {
 
 
 
+    implementation("com.google.accompanist:accompanist-flowlayout:0.30.1")
+
+    implementation("androidx.compose.material3:material3:1.3.2")// or latest stable version
+
+
+
+
 }
