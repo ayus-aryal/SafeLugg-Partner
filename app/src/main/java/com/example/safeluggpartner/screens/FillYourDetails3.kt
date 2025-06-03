@@ -376,10 +376,6 @@ fun FillYourDetails3Screen(
     }
 }
 
-
-
-
-
 @Composable
 fun FormField(
     label: String,
@@ -480,13 +476,6 @@ fun DropdownMenuField(
         }
     }
 }
-
-
-
-
-
-
-
 
 @Composable
 fun LabeledSwitch(
