@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         val googleSignInViewModel = GoogleSignInViewModel()
 
         SafeLuggPartnerTheme {
-            NavHost(navController = navController, startDestination = "fill_your_details3_screen") {
+            NavHost(navController = navController, startDestination = "welcome_screen") {
                 composable(route = "welcome_screen") {
                     WelcomeScreen {
                         googleSignInViewModel.handleGoogleSignIn(navController.context, navController)
