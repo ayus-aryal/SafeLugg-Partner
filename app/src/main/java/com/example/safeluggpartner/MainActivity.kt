@@ -12,6 +12,7 @@ import com.example.safeluggpartner.myviewmodels.GoogleSignInViewModel
 import com.example.safeluggpartner.screens.FillYourDetails1Screen
 import com.example.safeluggpartner.screens.FillYourDetails2Screen
 import com.example.safeluggpartner.screens.FillYourDetails3Screen
+import com.example.safeluggpartner.screens.FillYourDetails4Screen
 import com.example.safeluggpartner.screens.WelcomeScreen
 import com.example.safeluggpartner.ui.theme.SafeLuggPartnerTheme
 
@@ -34,7 +35,7 @@ class MainActivity : ComponentActivity() {
         val googleSignInViewModel = GoogleSignInViewModel()
 
         SafeLuggPartnerTheme {
-            NavHost(navController = navController, startDestination = "fill_your_details3_screen") {
+            NavHost(navController = navController, startDestination = "fill_your_details4_screen") {
                 composable(route = "welcome_screen") {
                     WelcomeScreen {
                         googleSignInViewModel.handleGoogleSignIn(navController.context, navController)
@@ -50,6 +51,11 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(route = "fill_your_details3_screen"){
                     FillYourDetails3Screen(
+                        navController = navController
+                    )
+                }
+                composable(route = "fill_your_details4_screen"){
+                    FillYourDetails4Screen(
                         navController = navController
                     )
                 }
