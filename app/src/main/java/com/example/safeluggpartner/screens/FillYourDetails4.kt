@@ -132,7 +132,7 @@ fun FillYourDetails4Screen(navController: NavController) {
                             priceError = true
                         } else {
                             // Navigate to next screen
-                            navController.navigate("next_screen_route")
+                            navController.navigate("fill_your_details5_screen")
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),

@@ -351,7 +351,7 @@ fun FillYourDetails3Screen(
                     onClick = {
                         focusManager.clearFocus()
                         if (!capacityError && !storageTypeError && !luggageSizesError && !securityNotesError && !openDaysError && !openingTimeError && !closingTimeError) {
-                            navController.navigate("summary_screen")
+                            navController.navigate("fill_your_details4_screen")
                         }
                     },
                     modifier = Modifier

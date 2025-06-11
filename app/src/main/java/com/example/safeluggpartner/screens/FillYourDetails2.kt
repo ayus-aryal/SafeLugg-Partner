@@ -200,7 +200,7 @@ fun FillYourDetails2Screen(navController: NavController) {
                 Button(
                     onClick = {
                         if (!countryError && !stateError && !cityError && !postalCodeError && !streetAddressError) {
-                            navController.navigate("home_screen")
+                            navController.navigate("fill_your_details3_screen")
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(50.dp),

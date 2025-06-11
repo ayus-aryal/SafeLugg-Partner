@@ -49,7 +49,6 @@ fun FillYourDetails5Screen(navController: NavController) {
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(500.dp)
                 .padding(top = 50.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
