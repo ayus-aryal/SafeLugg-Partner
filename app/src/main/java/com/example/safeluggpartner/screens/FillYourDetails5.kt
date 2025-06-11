@@ -49,6 +49,7 @@ fun FillYourDetails5Screen(navController: NavController) {
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
+                .height(500.dp)
                 .padding(top = 50.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
@@ -71,7 +72,7 @@ fun FillYourDetails5Screen(navController: NavController) {
                     fontFamily = customFontFamily,
                 )
                 Text(
-                    "Set your price per bag and let us handle the payouts securely.",
+                    "High-quality photos help customers understand your available space.   ",
                     fontSize = 14.sp,
                     color = Color.Gray,
                     fontFamily = customFontFamily,
@@ -91,6 +92,8 @@ fun FillYourDetails5Screen(navController: NavController) {
                         fontWeight = FontWeight.Medium
                     )
                 }
+
+                Spacer(Modifier.width(80.dp))
 
                 selectedImages.forEach { uri ->
                     Box(
