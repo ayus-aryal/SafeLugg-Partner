@@ -109,6 +109,9 @@ dependencies {
 
     implementation("androidx.compose.material3:material3:1.3.2")// or latest stable version
 
+    implementation("io.coil-kt:coil-compose:2.4.0") // For displaying image previews
+
+
 
 
 

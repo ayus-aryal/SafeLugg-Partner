@@ -13,6 +13,7 @@ import com.example.safeluggpartner.screens.FillYourDetails1Screen
 import com.example.safeluggpartner.screens.FillYourDetails2Screen
 import com.example.safeluggpartner.screens.FillYourDetails3Screen
 import com.example.safeluggpartner.screens.FillYourDetails4Screen
+import com.example.safeluggpartner.screens.FillYourDetails5Screen
 import com.example.safeluggpartner.screens.WelcomeScreen
 import com.example.safeluggpartner.ui.theme.SafeLuggPartnerTheme
 
@@ -35,10 +36,10 @@ class MainActivity : ComponentActivity() {
         val googleSignInViewModel = GoogleSignInViewModel()
 
         SafeLuggPartnerTheme {
-            NavHost(navController = navController, startDestination = "fill_your_details3_screen") {
+            NavHost(navController = navController, startDestination = "fill_your_details5_screen") {
                 composable(route = "welcome_screen") {
                     WelcomeScreen {
-                        googleSignInViewModel.handleGoogleSignIn(navController.context, navController)
+                        googleSignInViewModel.handleGoogleSignIn(navController.context, navController = navController)
                     }
                 }
                 composable(route = "fill_your_details1_screen"){
@@ -59,7 +60,11 @@ class MainActivity : ComponentActivity() {
                         navController = navController
                     )
                 }
-                
+                composable(route = "fill_your_details5_screen"){
+                    FillYourDetails5Screen(
+                        navController = navController
+                    )
+                }
             }
         }
     }

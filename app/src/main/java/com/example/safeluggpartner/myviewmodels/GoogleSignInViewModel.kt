@@ -107,7 +107,7 @@ class GoogleSignInViewModel : ViewModel() {
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     Log.d("Auth", "User already exists in Firestore. Redirecting to Home.")
-                    navController.navigate("fill_your_details1_screen") {
+                    navController.navigate("fill_your_details2_screen") {
                         popUpTo("splash_screen") { inclusive = true }
                     }
                 } else {
@@ -121,7 +121,7 @@ class GoogleSignInViewModel : ViewModel() {
                     firestore.collection("users").document(userId).set(newUser)
                         .addOnSuccessListener {
                             Log.d("Auth", "New user profile created in Firestore.")
-                            navController.navigate("fill_your_details1_screen") {
+                            navController.navigate("fill_your_details2_screen") {
                                 popUpTo("splash_screen") { inclusive = true }
                             }
                         }
