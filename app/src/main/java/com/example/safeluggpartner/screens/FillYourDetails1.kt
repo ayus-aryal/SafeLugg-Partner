@@ -44,6 +44,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.safeluggpartner.R
+import com.example.safeluggpartner.myviewmodels.SharedViewModel
+import com.example.safeluggpartner.myviewmodels.PersonalDetails
+
+
 
 val customFontFamily = FontFamily(Font(R.font.inter))
 
@@ -51,7 +55,8 @@ val customFontFamily = FontFamily(Font(R.font.inter))
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FillYourDetails1Screen(navController: NavController) {
+fun FillYourDetails1Screen(navController: NavController,
+                            viewModel: SharedViewModel) {
     val focusManager = LocalFocusManager.current
 
     var businessName by rememberSaveable { mutableStateOf("") }
@@ -135,6 +140,8 @@ fun FillYourDetails1Screen(navController: NavController) {
                     onClick = {
                         focusManager.clearFocus()
                         if (!businessNameError && !ownerNameError && !phoneError && !emailError) {
+                            val personalDetails = PersonalDetails(businessName, ownerName, phoneNumber, email)
+                            viewModel.setUserDetails(personalDetails)
                             navController.navigate("fill_your_details2_screen")
                         }
                     },
@@ -176,7 +183,7 @@ fun FormField(
         Text(
             text = label,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 14.sp,
+               fontSize = 14.sp,
             color = Color.Black,
             fontFamily = customFontFamily,
             modifier = Modifier.padding(bottom = 4.dp)
@@ -202,8 +209,3 @@ fun FormField(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun FillYourDetails1ScreenPreview() {
-    FillYourDetails1Screen(navController = rememberNavController())
-}
