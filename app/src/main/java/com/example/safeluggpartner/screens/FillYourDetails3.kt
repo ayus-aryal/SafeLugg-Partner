@@ -53,15 +53,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.safeluggpartner.R
+import com.example.safeluggpartner.myviewmodels.SharedViewModel
+import com.example.safeluggpartner.myviewmodels.StorageDetails
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FillYourDetails3Screen(
-    navController: NavController
+    navController: NavController,
+    viewModel: SharedViewModel
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -351,7 +355,9 @@ fun FillYourDetails3Screen(
                     onClick = {
                         focusManager.clearFocus()
                         if (!capacityError && !storageTypeError && !luggageSizesError && !securityNotesError && !openDaysError && !openingTimeError && !closingTimeError) {
-                            navController.navigate("fill_your_details4_screen")
+                            val storageDetails = StorageDetails(capacity,selectedStorageType, luggageSizes, hasCCTV, hasStaff, hasLocks, securityNotes, openDays, openingTime, closingTime, is24x7 )
+                            viewModel.setStorageDetails(storageDetails)
+                            navController.navigate("review_screen")
                         }
                     },
                     modifier = Modifier
@@ -505,9 +511,3 @@ fun LabeledSwitch(
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun FillYourDetails3ScreenPreview() {
-    FillYourDetails3Screen(navController = rememberNavController())
-}

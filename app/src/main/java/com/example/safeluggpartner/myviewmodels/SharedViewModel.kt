@@ -25,4 +25,17 @@ class SharedViewModel : ViewModel() {
         _locationDetails.value = details
 
     }
+
+
+
+
+
+
+    private val _storageDetails = mutableStateOf<StorageDetails?>(null)
+    val storageDetails: State<StorageDetails?> = _storageDetails
+
+    fun setStorageDetails(details: StorageDetails){
+        _storageDetails.value = details
+    }
 }
+

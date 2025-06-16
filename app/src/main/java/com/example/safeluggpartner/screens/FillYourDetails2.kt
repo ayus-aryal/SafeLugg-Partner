@@ -192,7 +192,7 @@ fun FillYourDetails2Screen(navController: NavController, viewModel: SharedViewMo
                                 locationText
                             )
                             viewModel.setLocationDetails(locationDetails)
-                            navController.navigate("review_screen")
+                            navController.navigate("fill_your_details3_screen")
                         }
                     },
                     modifier = Modifier

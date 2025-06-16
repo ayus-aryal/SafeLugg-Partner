@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.safeluggpartner.myviewmodels.SharedViewModel
@@ -34,6 +35,7 @@ import com.example.safeluggpartner.myviewmodels.SharedViewModel
 fun ReviewScreen(viewModel: SharedViewModel) {
     val personalDetails = viewModel.personalDetails.value
     val locationDetails = viewModel.locationDetails.value
+    val storageDetails = viewModel.storageDetails.value
 
     if (personalDetails != null && locationDetails != null) {
         Column(
@@ -45,7 +47,7 @@ fun ReviewScreen(viewModel: SharedViewModel) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 25.dp),
+                    .padding(top = 50.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 elevation = CardDefaults.cardElevation(6.dp),
                 shape = RoundedCornerShape(16.dp)
@@ -71,7 +73,7 @@ fun ReviewScreen(viewModel: SharedViewModel) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth()
@@ -105,7 +107,48 @@ fun ReviewScreen(viewModel: SharedViewModel) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(6.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(24.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = "Storage & Availability Info",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color.Black,
+                        fontFamily = customFontFamily
+                    )
+
+                    storageDetails?.let {
+                        InfoTextRow("Capacity", it.capacity)
+                        InfoTextRow("Storage Type", it.storageTypes)
+                        InfoTextRow("Luggage Sizes", it.luggageSizes.joinToString())
+                        InfoTextRow("Has CCTV", if (it.hasCCTV) "Yes" else "No")
+                        InfoTextRow("Has Staff", if (it.hasStaff) "Yes" else "No")
+                        InfoTextRow("Has Locks", if (it.hasLocks) "Yes" else "No")
+                        InfoTextRow("Security Notes", it.securityNotes.ifBlank { "None" })
+                        InfoTextRow("Operating Days", it.openDays.joinToString())
+                        InfoTextRow("Opening Time", if (it.is24x7) "Open 24x7" else it.openingTime)
+                        if (!it.is24x7) {
+                            InfoTextRow("Closing Time", it.closingTime)
+                        }
+                    }
+                }
+            }
+
+
 
             Button(
                 onClick = {
@@ -165,4 +208,12 @@ fun InfoTextRow(label: String, value: String) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ReviewScreenPreview() {
+    ReviewScreen(
+        viewModel = SharedViewModel()
+    )
 }

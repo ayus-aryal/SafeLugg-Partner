@@ -16,3 +16,18 @@ data class LocationDetails(
     val landmark : String,
     val locationText : String
 )
+
+
+data class StorageDetails(
+    val capacity : String,
+    val storageTypes : String,
+    val luggageSizes : Set<String>,
+    val hasCCTV : Boolean,
+    val hasStaff : Boolean,
+    val hasLocks : Boolean,
+    val securityNotes : String,
+    val openDays : Set<String>,
+    val openingTime : String,
+    val closingTime : String,
+    val is24x7 : Boolean
+)
