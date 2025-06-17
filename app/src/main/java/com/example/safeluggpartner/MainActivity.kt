@@ -64,7 +64,8 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(route = "fill_your_details4_screen"){
                     FillYourDetails4Screen(
-                        navController = navController
+                        navController = navController,
+                        sharedViewModel
                     )
                 }
                 composable(route = "fill_your_details5_screen"){

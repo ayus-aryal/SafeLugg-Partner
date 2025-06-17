@@ -31,3 +31,9 @@ data class StorageDetails(
     val closingTime : String,
     val is24x7 : Boolean
 )
+
+
+data class PricingDetails(
+    val pricePerBag : String,
+    val note : String
+)

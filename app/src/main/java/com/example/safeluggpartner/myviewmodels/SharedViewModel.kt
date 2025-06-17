@@ -34,5 +34,16 @@ class SharedViewModel : ViewModel() {
     fun setStorageDetails(details: StorageDetails){
         _storageDetails.value = details
     }
+
+
+
+    private val _pricingDetails = mutableStateOf<PricingDetails?>(null)
+    val pricingDetails : State<PricingDetails?> = _pricingDetails
+
+    fun setPricingDetails(details: PricingDetails){
+        _pricingDetails.value = details
+    }
+
+
 }
 

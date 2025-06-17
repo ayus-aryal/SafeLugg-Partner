@@ -23,10 +23,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.safeluggpartner.R
+import com.example.safeluggpartner.myviewmodels.PricingDetails
+import com.example.safeluggpartner.myviewmodels.SharedViewModel
 
 
 @Composable
-fun FillYourDetails4Screen(navController: NavController) {
+fun FillYourDetails4Screen(navController: NavController,
+                           viewModel: SharedViewModel) {
     var pricePerBag by rememberSaveable { mutableStateOf("") }
     var priceError by rememberSaveable { mutableStateOf(false) }
     var note by rememberSaveable { mutableStateOf("") }
@@ -123,7 +126,6 @@ fun FillYourDetails4Screen(navController: NavController) {
 
                 val focusManager = LocalFocusManager.current
 
-                // --- Submit Button ---
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
@@ -131,7 +133,8 @@ fun FillYourDetails4Screen(navController: NavController) {
                         if (pricePerBag.isBlank() || pricePerBag.toIntOrNull() == null || pricePerBag.toInt() <= 0) {
                             priceError = true
                         } else {
-                            // Navigate to next screen
+                            val pricingDetails = PricingDetails(pricePerBag, note)
+                            viewModel.setPricingDetails(pricingDetails)
                             navController.navigate("fill_your_details5_screen")
                         }
                     },
@@ -203,8 +206,3 @@ fun FormField1(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun FillYourDetails4ScreenPreview() {
-    FillYourDetails4Screen(navController = rememberNavController())
-}
