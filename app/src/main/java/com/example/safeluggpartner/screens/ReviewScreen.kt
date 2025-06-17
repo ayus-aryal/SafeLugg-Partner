@@ -36,8 +36,9 @@ fun ReviewScreen(viewModel: SharedViewModel) {
     val personalDetails = viewModel.personalDetails.value
     val locationDetails = viewModel.locationDetails.value
     val storageDetails = viewModel.storageDetails.value
+    val pricingDetails = viewModel.pricingDetails.value
 
-    if (personalDetails != null && locationDetails != null) {
+    if (personalDetails != null && locationDetails != null && pricingDetails != null) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -144,6 +145,34 @@ fun ReviewScreen(viewModel: SharedViewModel) {
                         if (!it.is24x7) {
                             InfoTextRow("Closing Time", it.closingTime)
                         }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(6.dp),
+                shape = RoundedCornerShape(16.dp)
+            ){
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ){
+                    Text(
+                        text = "Pricing Details",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color.Black,
+                        fontFamily = customFontFamily
+                    )
+                    pricingDetails.let{
+                        InfoTextRow("Price Per Bag", it.pricePerBag)
+                        InfoTextRow("Additional Note", it.note)
                     }
                 }
             }

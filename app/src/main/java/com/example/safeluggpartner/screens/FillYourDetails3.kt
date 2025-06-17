@@ -93,7 +93,7 @@ fun FillYourDetails3Screen(
     val capacityError = capacity.isBlank()
     val storageTypeError = selectedStorageType.isBlank()
     val luggageSizesError = luggageSizes.isEmpty()
-    val securityNotesError = securityNotes.isBlank() && !(hasCCTV || hasStaff || hasLocks) // optional
+    val securityNotesError = securityNotes.isBlank() && !(hasCCTV || hasStaff || hasLocks)
     val openDaysError = openDays.isEmpty() && !is24x7
     val openingTimeError = openingTime.isBlank() && !is24x7
     val closingTimeError = closingTime.isBlank() && !is24x7
