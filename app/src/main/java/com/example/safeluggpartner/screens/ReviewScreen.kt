@@ -1,5 +1,6 @@
 package com.example.safeluggpartner.screens
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.safeluggpartner.myviewmodels.SharedViewModel
 
 @Composable
@@ -37,6 +39,8 @@ fun ReviewScreen(viewModel: SharedViewModel) {
     val locationDetails = viewModel.locationDetails.value
     val storageDetails = viewModel.storageDetails.value
     val pricingDetails = viewModel.pricingDetails.value
+    val selectedImageUris = viewModel.selectedImageUris.value
+
 
     if (personalDetails != null && locationDetails != null && pricingDetails != null) {
         Column(
@@ -177,6 +181,53 @@ fun ReviewScreen(viewModel: SharedViewModel) {
                 }
             }
 
+
+
+            if (selectedImageUris.isNotEmpty()) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(6.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            text = "Your Storage Photos",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = Color.Black,
+                            fontFamily = customFontFamily
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            selectedImageUris.forEach { uri ->
+                                Card(
+                                    shape = RoundedCornerShape(12.dp),
+                                    elevation = CardDefaults.cardElevation(4.dp)
+                                ) {
+                                    androidx.compose.foundation.Image(
+                                        painter = rememberAsyncImagePainter(uri),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(120.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
 
             Button(

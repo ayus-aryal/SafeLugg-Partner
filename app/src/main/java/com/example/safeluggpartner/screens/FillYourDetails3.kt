@@ -357,7 +357,7 @@ fun FillYourDetails3Screen(
                         if (!capacityError && !storageTypeError && !luggageSizesError && !securityNotesError && !openDaysError && !openingTimeError && !closingTimeError) {
                             val storageDetails = StorageDetails(capacity,selectedStorageType, luggageSizes, hasCCTV, hasStaff, hasLocks, securityNotes, openDays, openingTime, closingTime, is24x7 )
                             viewModel.setStorageDetails(storageDetails)
-                            navController.navigate("review_screen")
+                            navController.navigate("fill_your_details4_screen")
                         }
                     },
                     modifier = Modifier

@@ -70,7 +70,8 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(route = "fill_your_details5_screen"){
                     FillYourDetails5Screen(
-                        navController = navController
+                        navController = navController,
+                        sharedViewModel
                     )
                 }
                 composable(route = "review_screen"){

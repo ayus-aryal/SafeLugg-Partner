@@ -27,9 +27,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.safeluggpartner.R
+import com.example.safeluggpartner.myviewmodels.SharedViewModel
 
 @Composable
-fun FillYourDetails5Screen(navController: NavController) {
+fun FillYourDetails5Screen(navController: NavController,
+                           viewModel: SharedViewModel) {
     var selectedImages by remember { mutableStateOf<List<Uri>>(emptyList()) }
     var previewImage by remember { mutableStateOf<Uri?>(null) }
 
@@ -132,6 +134,11 @@ fun FillYourDetails5Screen(navController: NavController) {
 
                 Button(
                     onClick = {
+                        selectedImages.forEach { uri ->
+                            viewModel.addImageUri(uri)
+                        }
+
+                        navController.navigate("review_screen")
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(Color.Black),
@@ -183,8 +190,3 @@ fun FillYourDetails5Screen(navController: NavController) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun FillYourDetails5ScreenPreview() {
-    FillYourDetails5Screen(rememberNavController())
-}
