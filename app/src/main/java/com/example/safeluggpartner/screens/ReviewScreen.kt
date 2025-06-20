@@ -1,5 +1,6 @@
 package com.example.safeluggpartner.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,15 +24,26 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.safeluggpartner.myviewmodels.SharedViewModel
+import com.example.safeluggpartner.network.RetrofitInstance
+import com.example.safeluggpartner.util.getFileFromUri
+import com.google.gson.Gson
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 @Composable
 fun ReviewScreen(viewModel: SharedViewModel) {
@@ -40,6 +52,11 @@ fun ReviewScreen(viewModel: SharedViewModel) {
     val storageDetails = viewModel.storageDetails.value
     val pricingDetails = viewModel.pricingDetails.value
     val selectedImageUris = viewModel.selectedImageUris.value
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val finalRequest = viewModel.getFinalSubmissionRequest()
+    val gson = remember { Gson() }
+
 
 
     if (personalDetails != null && locationDetails != null && pricingDetails != null) {
@@ -232,6 +249,28 @@ fun ReviewScreen(viewModel: SharedViewModel) {
 
             Button(
                 onClick = {
+                    scope.launch {
+                        try {
+                            val json = gson.toJson(finalRequest)
+                            val dataPart = json.toRequestBody("application/json".toMediaTypeOrNull())
+
+                            val imageParts = selectedImageUris.map { uri ->
+                                val file = getFileFromUri(context, uri)
+                                val reqFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                                MultipartBody.Part.createFormData("images", file.name, reqFile)
+                            }
+
+                            val response = RetrofitInstance.api.submitPartnerForm(dataPart, imageParts)
+
+                            if (response.isSuccessful) {
+                                Toast.makeText(context, "Submitted successfully!", Toast.LENGTH_LONG).show()
+                            } else {
+                                Toast.makeText(context, "Submission failed", Toast.LENGTH_LONG).show()
+                            }
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                        }
+                    }
 
                 },
                 modifier = Modifier

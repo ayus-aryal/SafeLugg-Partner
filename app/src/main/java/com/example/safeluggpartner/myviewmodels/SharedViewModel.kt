@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.safeluggpartner.model.FinalSubmissionRequest
 
 class SharedViewModel : ViewModel() {
 
@@ -59,6 +60,16 @@ class SharedViewModel : ViewModel() {
     fun clearAllImages() {
         _selectedImageUris.value = emptyList()
     }
+
+    fun getFinalSubmissionRequest(): FinalSubmissionRequest {
+        return FinalSubmissionRequest(
+            personalDetails = personalDetails.value!!,
+            locationDetails = locationDetails.value!!,
+            storageDetails = storageDetails.value!!,
+            pricingDetails = pricingDetails.value!!
+        )
+    }
+
 
 }
 

@@ -97,7 +97,7 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-permissions:0.31.5-beta")
     implementation("com.google.maps.android:maps-compose:2.11.4")
-    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-maps:19.2.0")
 
     implementation("com.google.code.gson:gson:2.10.1")
 
@@ -113,6 +113,9 @@ dependencies {
 
 
 
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
 
 }
