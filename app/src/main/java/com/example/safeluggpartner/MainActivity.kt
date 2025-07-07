@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
 
 
         SafeLuggPartnerTheme {
-            NavHost(navController = navController, startDestination = "fill_your_details1_screen") {
+            NavHost(navController = navController, startDestination = "fill_your_details3_screen") {
                 composable(route = "welcome_screen") {
                     WelcomeScreen {
                         googleSignInViewModel.handleGoogleSignIn(navController.context, navController = navController)

@@ -197,6 +197,7 @@ fun FillYourDetails3Screen(
                         Text(size, color = Color.Black, fontFamily = customFontFamily)
                     }
                 }
+
                 if (luggageSizesError) {
                     Text(
                         "Select at least one luggage size",
