@@ -16,3 +16,4 @@ interface VendorApiService {
         @Part images: List<MultipartBody.Part>
     ): Response<Unit>
 }
+
