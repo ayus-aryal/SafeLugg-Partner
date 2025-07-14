@@ -11,6 +11,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -123,10 +127,9 @@ fun FillYourDetails5Screen(navController: NavController,
                                 .background(Color.Black.copy(alpha = 0.6f), shape = CircleShape)
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.google), // replace with your close icon
-                                contentDescription = "Remove image",
-                                tint = Color.White,
-                                modifier = Modifier.size(18.dp)
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "Close Icon",
+                                tint = Color.White
                             )
                         }
                     }
