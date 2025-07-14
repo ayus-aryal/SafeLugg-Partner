@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.safeluggpartner.myviewmodels.SharedViewModel
 import com.example.safeluggpartner.network.RetrofitInstance
@@ -46,7 +47,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
 @Composable
-fun ReviewScreen(viewModel: SharedViewModel) {
+fun ReviewScreen(viewModel: SharedViewModel, navController: NavController) {
     val personalDetails = viewModel.personalDetails.value
     val locationDetails = viewModel.locationDetails.value
     val storageDetails = viewModel.storageDetails.value
@@ -264,6 +265,7 @@ fun ReviewScreen(viewModel: SharedViewModel) {
 
                             if (response.isSuccessful) {
                                 Toast.makeText(context, "Submitted successfully!", Toast.LENGTH_LONG).show()
+                                navController.navigate("verification_pending_screen")
                             } else {
                                 Toast.makeText(context, "Submission failed", Toast.LENGTH_LONG).show()
                             }
@@ -329,10 +331,3 @@ fun InfoTextRow(label: String, value: String) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ReviewScreenPreview() {
-    ReviewScreen(
-        viewModel = SharedViewModel()
-    )
-}

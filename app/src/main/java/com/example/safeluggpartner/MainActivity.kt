@@ -17,6 +17,7 @@ import com.example.safeluggpartner.screens.FillYourDetails3Screen
 import com.example.safeluggpartner.screens.FillYourDetails4Screen
 import com.example.safeluggpartner.screens.FillYourDetails5Screen
 import com.example.safeluggpartner.screens.ReviewScreen
+import com.example.safeluggpartner.screens.VerificationPendingScreen
 import com.example.safeluggpartner.screens.WelcomeScreen
 import com.example.safeluggpartner.ui.theme.SafeLuggPartnerTheme
 
@@ -41,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
 
         SafeLuggPartnerTheme {
-            NavHost(navController = navController, startDestination = "fill_your_details5_screen") {
+            NavHost(navController = navController, startDestination = "fill_your_details1_screen") {
                 composable(route = "welcome_screen") {
                     WelcomeScreen {
                         googleSignInViewModel.handleGoogleSignIn(navController.context, navController = navController)
@@ -76,7 +77,13 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(route = "review_screen"){
                     ReviewScreen(
-                        sharedViewModel
+                        sharedViewModel,
+                        navController = navController
+                    )
+                }
+                composable(route = "verification_pending_status"){
+                    VerificationPendingScreen(
+                        navController = navController
                     )
                 }
             }
