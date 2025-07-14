@@ -56,6 +56,7 @@ fun VerificationPendingScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "Your Registration is Submitted",
+                    textAlign = TextAlign.Center,
                     fontFamily = customFontFamily,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold

@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
                         navController = navController
                     )
                 }
-                composable(route = "verification_pending_status"){
+                composable(route = "verification_pending_screen"){
                     VerificationPendingScreen(
                         navController = navController
                     )
