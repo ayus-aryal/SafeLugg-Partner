@@ -264,6 +264,8 @@ fun ReviewScreen(viewModel: SharedViewModel, navController: NavController) {
                             val response = RetrofitInstance.api.submitPartnerForm(dataPart, imageParts)
 
                             if (response.isSuccessful) {
+                                PreferenceHelper.saveVendorEmail(context, personalDetails.email)
+                                PreferenceHelper.setDetailsSubmitted(context, true)
                                 Toast.makeText(context, "Submitted successfully!", Toast.LENGTH_LONG).show()
                                 navController.navigate("verification_pending_screen")
                             } else {

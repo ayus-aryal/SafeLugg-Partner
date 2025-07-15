@@ -4,9 +4,15 @@ import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.safeluggpartner.model.FinalSubmissionRequest
+import com.example.safeluggpartner.network.VendorApiService
+import kotlinx.coroutines.launch
 
-class SharedViewModel : ViewModel() {
+class SharedViewModel(
+    private val vendorApi: VendorApiService
+
+) : ViewModel() {
 
     private val _personalDetails = mutableStateOf<PersonalDetails?>(null)
     val personalDetails: State<PersonalDetails?> = _personalDetails
@@ -68,6 +74,32 @@ class SharedViewModel : ViewModel() {
             storageDetails = storageDetails.value!!,
             pricingDetails = pricingDetails.value!!
         )
+    }
+
+    fun checkEmailExists(email: String, onResult: (Boolean) -> Unit){
+        viewModelScope.launch {
+            try{
+                val response = vendorApi.checkVendorExists(email)
+                onResult(response.isSuccessful && response.body() == true)
+            }catch(e: Exception){
+                onResult(false)
+            }
+        }
+    }
+
+    fun fetchVerificationStatus(email: String, onResult: (Boolean?) -> Unit){
+        viewModelScope.launch {
+            try{
+                val response = vendorApi.getVerifcationStatus(email)
+                if(response.isSuccessful){
+                    onResult(response.body())
+                }else{
+                    onResult(null)
+                }
+            }catch(e: Exception){
+                onResult(null)
+            }
+        }
     }
 
 
