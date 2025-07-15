@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.safeluggpartner.R
+import com.example.safeluggpartner.network.VendorApiService
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.AuthResult
@@ -26,7 +27,7 @@ import kotlinx.coroutines.tasks.await
 import java.security.MessageDigest
 import java.util.UUID
 
-class GoogleSignInViewModel : ViewModel() {
+class GoogleSignInViewModel(private val vendorApiService: VendorApiService) : ViewModel() {
 
     fun handleGoogleSignIn(context: Context, navController: NavController) {
         viewModelScope.launch {
@@ -34,104 +35,86 @@ class GoogleSignInViewModel : ViewModel() {
                 result.fold(
                     onSuccess = { authResult ->
                         val user = authResult.user
-                        if (user != null) {
-                            handleSignInResult(user, navController)
-                        } else {
-                            Toast.makeText(context, "User not found!", Toast.LENGTH_LONG).show()
+                        val email = user?.email
+                        if (!email.isNullOrEmpty()) {
+                            PreferenceHelper.saveVendorEmail(context, email)
+                            checkWithBackendAndNavigate(context, email, navController)
                         }
                     },
-                    onFailure = { e ->
-                        Toast.makeText(
-                            context,
-                            "Something went wrong: ${e.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        Log.d("Issue", "handleGoogleSignIn: ${e.message}")
+                    onFailure = {
+                        Toast.makeText(context, "Sign-in Failed!", Toast.LENGTH_SHORT).show()
                     }
                 )
             }
         }
     }
 
-    private suspend fun googleSignIn(context: Context): Flow<Result<AuthResult>> {
-        val firebaseAuth = FirebaseAuth.getInstance()
+    private suspend fun googleSignIn(context: Context): Flow<Result<AuthResult>> = callbackFlow {
+        try {
+            val credentialManager = CredentialManager.create(context)
+            val hashedNonce = UUID.randomUUID().toString().sha256()
+            val googleIdOption = GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId(context.getString(R.string.web_client_id))
+                .setNonce(hashedNonce)
+                .setAutoSelectEnabled(true)
+                .build()
 
-        return callbackFlow {
-            try {
-                val credentialManager: CredentialManager = CredentialManager.create(context)
+            val request = GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build()
 
-                val ranNonce: String = UUID.randomUUID().toString()
-                val bytes: ByteArray = ranNonce.toByteArray()
-                val md: MessageDigest = MessageDigest.getInstance("SHA-256")
-                val digest: ByteArray = md.digest(bytes)
-                val hashedNonce: String = digest.fold("") { str, it -> str + "%02x".format(it) }
+            val result = credentialManager.getCredential(context, request)
+            val credential = result.credential
 
-                val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
-                    .setFilterByAuthorizedAccounts(false)
-                    .setServerClientId(context.getString(R.string.web_client_id))
-                    .setNonce(hashedNonce)
-                    .setAutoSelectEnabled(true)
-                    .build()
-
-                val request: GetCredentialRequest = GetCredentialRequest.Builder()
-                    .addCredentialOption(googleIdOption)
-                    .build()
-
-                val result = credentialManager.getCredential(context, request)
-                val credential = result.credential
-
-                if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                    val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-                    val authCredential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
-                    val authResult = firebaseAuth.signInWithCredential(authCredential).await()
-                    trySend(Result.success(authResult))
-                } else {
-                    throw RuntimeException("Received an invalid credential type.")
-                }
-
-            } catch (e: GetCredentialCancellationException) {
-                trySend(Result.failure(Exception("Sign-in was canceled.")))
-            } catch (e: Exception) {
-                trySend(Result.failure(e))
+            if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                val firebaseAuth = FirebaseAuth.getInstance()
+                val authCredential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
+                val authResult = firebaseAuth.signInWithCredential(authCredential).await()
+                trySend(Result.success(authResult))
+            } else {
+                throw IllegalArgumentException("Invalid Google Credential")
             }
+        } catch (e: Exception) {
+            trySend(Result.failure(e))
+        }
+        awaitClose()
+    }
 
-            awaitClose { }
+    private fun checkWithBackendAndNavigate(context: Context, email: String, navController: NavController) {
+        viewModelScope.launch {
+            try {
+                val existsResponse = vendorApiService.checkVendorExists(email)
+                if (existsResponse.isSuccessful && existsResponse.body() == true) {
+                    PreferenceHelper.setDetailsSubmitted(context, true)
+                    val verifyResponse = vendorApiService.getVerifcationStatus(email)
+                    if (verifyResponse.isSuccessful && verifyResponse.body() == true) {
+                        navController.navigate("vendor_dashboard") {
+                            popUpTo("welcome_screen") { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate("verification_pending_screen") {
+                            popUpTo("welcome_screen") { inclusive = true }
+                        }
+                    }
+                } else {
+                    PreferenceHelper.setDetailsSubmitted(context, false)
+                    navController.navigate("fill_your_details1_screen") {
+                        popUpTo("welcome_screen") { inclusive = true }
+                    }
+                }
+            } catch (e: Exception) {
+                PreferenceHelper.setDetailsSubmitted(context, false)
+                navController.navigate("fill_your_details1_screen") {
+                    popUpTo("welcome_screen") { inclusive = true }
+                }
+            }
         }
     }
 
-    private fun handleSignInResult(user: FirebaseUser, navController: NavController) {
-        val firestore = FirebaseFirestore.getInstance()
-        val userId = user.uid
-
-        firestore.collection("users").document(userId).get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    Log.d("Auth", "User already exists in Firestore. Redirecting to Home.")
-                    navController.navigate("fill_your_details1_screen") {
-                        popUpTo("splash_screen") { inclusive = true }
-                    }
-                } else {
-                    Log.d("Auth", "User does not exist in Firestore. Redirecting to Fill Details.")
-                    val newUser = hashMapOf(
-                        "email" to user.email,
-                        "firstName" to "",
-                        "lastName" to "",
-                        "phoneNumber" to ""
-                    )
-                    firestore.collection("users").document(userId).set(newUser)
-                        .addOnSuccessListener {
-                            Log.d("Auth", "New user profile created in Firestore.")
-                            navController.navigate("fill_your_details1_screen") {
-                                popUpTo("splash_screen") { inclusive = true }
-                            }
-                        }
-                        .addOnFailureListener {
-                            Log.e("Auth", "Firestore write failed: ${it.message}")
-                        }
-                }
-            }
-            .addOnFailureListener {
-                Log.e("Auth", "Firestore read failed: ${it.message}")
-            }
+    private fun String.sha256(): String {
+        val md = MessageDigest.getInstance("SHA-256")
+        return md.digest(this.toByteArray()).joinToString("") { "%02x".format(it) }
     }
 }
