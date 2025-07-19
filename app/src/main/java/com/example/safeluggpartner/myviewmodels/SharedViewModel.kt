@@ -23,7 +23,6 @@ class SharedViewModel(
 
     }
 
-
     private val _locationDetails = mutableStateOf<LocationDetails?>(null)
     val locationDetails: State<LocationDetails?> = _locationDetails
 
